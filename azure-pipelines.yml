@@ -47,7 +47,8 @@ steps:
       set -e
 
       ORG_URL="$(System.CollectionUri)"
-      PROJECT="$(System.TeamProject)"
+      PROJECT_RAW="$(System.TeamProject)"
+      PROJECT="${PROJECT_RAW// /%20}"   # URL encode spaces
       REPO_ID="$(Build.Repository.ID)"
 
       SOURCE_BRANCH="refs/heads/sync/github-$(Build.BuildId)"
@@ -59,6 +60,8 @@ steps:
       BODY="{\"sourceRefName\":\"$SOURCE_BRANCH\",\"targetRefName\":\"$TARGET_BRANCH\",\"title\":\"$TITLE\",\"description\":\"$DESCRIPTION\"}"
 
       echo "Creating PR..."
+      echo "ORG_URL=$ORG_URL"
+      echo "PROJECT=$PROJECT_RAW -> $PROJECT"
       echo "$BODY"
 
       curl -sS -u :$AZURE_DEVOPS_PAT \
@@ -68,3 +71,4 @@ steps:
         "${ORG_URL}${PROJECT}/_apis/git/repositories/${REPO_ID}/pullrequests?api-version=7.0"
   env:
     AZURE_DEVOPS_PAT: $(AZURE_DEVOPS_PAT)
+
