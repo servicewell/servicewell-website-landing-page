@@ -1,0 +1,70 @@
+trigger: none
+
+variables:
+  githubRepo: "https://github.com/LeutrimOs/LandingPage.git"
+  githubBranch: "main"
+  azureTargetBranch: "main"
+  targetFileRepoRoot: "src/components"
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+- checkout: self
+  fetchDepth: 0
+
+- script: |
+    set -e
+    git config user.email "sync-bot@servicewell.se"
+    git config user.name "Sync Bot"
+
+    echo "Add GitHub remote"
+    git remote add github $(githubRepo)
+
+    echo "Fetch from GitHub"
+    git fetch github $(githubBranch)
+
+    BRANCH="sync/github-$(Build.BuildId)"
+    echo "Create branch $BRANCH"
+    git checkout -b $BRANCH origin/$(azureTargetBranch)
+
+    echo "Merge GitHub changes"
+    git merge --no-edit github/$(githubBranch) || true
+
+    echo "Push to Azure"
+    git push origin $BRANCH
+  displayName: "Sync GitHub → Azure branch"
+
+- task: Bash@3
+  displayName: "Create PR in Azure DevOps"
+  inputs:
+    targetType: inline
+    script: |
+      set -e
+      ORG_URL="$(System.CollectionUri)"
+      PROJECT="$(System.TeamProject)"
+      REPO_ID="$(Build.Repository.ID)"
+
+      SOURCE_BRANCH="refs/heads/sync/github-$(Build.BuildId)"
+      TARGET_BRANCH="refs/heads/$(azureTargetBranch)"
+
+      TITLE="Sync from GitHub (Build $(Build.BuildId))"
+      DESCRIPTION="Automated sync from GitHub: $(githubRepo) branch $(githubBranch)"
+
+      BODY=$(cat <<EOF
+      {
+        "sourceRefName": "$SOURCE_BRANCH",
+        "targetRefName": "$TARGET_BRANCH",
+        "title": "$TITLE",
+        "description": "$DESCRIPTION"
+      }
+EOF
+      )
+
+      curl -sS -u :$AZURE_DEVOPS_PAT \
+        -H "Content-Type: application/json" \
+        -X POST \
+        -d "$BODY" \
+        "${ORG_URL}${PROJECT}/_apis/git/repositories/${REPO_ID}/pullrequests?api-version=7.0"
+  env:
+    AZURE_DEVOPS_PAT: $(AZURE_DEVOPS_PAT)
