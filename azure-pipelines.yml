@@ -31,9 +31,13 @@ steps:
     echo "Merge GitHub changes"
     git merge --no-edit github/$(githubBranch) || true
 
-    echo "Push to Azure"
-    git push origin $BRANCH
+    echo "System.AccessToken length: ${#SYSTEM_ACCESSTOKEN}"
+
+    echo "Push to Azure using System.AccessToken"
+    git -c http.extraheader="AUTHORIZATION: bearer $(System.AccessToken)" push origin $BRANCH
   displayName: "Sync GitHub → Azure branch"
+  env:
+    SYSTEM_ACCESSTOKEN: $(System.AccessToken)
 
 - task: Bash@3
   displayName: "Create PR in Azure DevOps"
