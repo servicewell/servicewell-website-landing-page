@@ -4,7 +4,6 @@ variables:
   githubRepo: "https://github.com/LeutrimOs/LandingPage.git"
   githubBranch: "main"
   azureTargetBranch: "main"
-  targetFileRepoRoot: "src/components"
 
 pool:
   vmImage: "ubuntu-latest"
@@ -41,6 +40,7 @@ steps:
     targetType: inline
     script: |
       set -e
+
       ORG_URL="$(System.CollectionUri)"
       PROJECT="$(System.TeamProject)"
       REPO_ID="$(Build.Repository.ID)"
@@ -51,15 +51,10 @@ steps:
       TITLE="Sync from GitHub (Build $(Build.BuildId))"
       DESCRIPTION="Automated sync from GitHub: $(githubRepo) branch $(githubBranch)"
 
-      BODY=$(cat <<EOF
-      {
-        "sourceRefName": "$SOURCE_BRANCH",
-        "targetRefName": "$TARGET_BRANCH",
-        "title": "$TITLE",
-        "description": "$DESCRIPTION"
-      }
-EOF
-      )
+      BODY="{\"sourceRefName\":\"$SOURCE_BRANCH\",\"targetRefName\":\"$TARGET_BRANCH\",\"title\":\"$TITLE\",\"description\":\"$DESCRIPTION\"}"
+
+      echo "Creating PR..."
+      echo "$BODY"
 
       curl -sS -u :$AZURE_DEVOPS_PAT \
         -H "Content-Type: application/json" \
