@@ -96,7 +96,7 @@ export function Contact() {
                         placeholder="kontakt@servicewell.se"
                       />
                     </div>
-                    <div>
+                    {/* <div>
                       <label htmlFor="phone" className="block text-gray-700 mb-2">
                         Telefon
                       </label>
@@ -108,7 +108,7 @@ export function Contact() {
                         onChange={handleChange}
                         placeholder="070-123 45 67"
                       />
-                    </div>
+                    </div> */}
                   </div>
 
                   <div>
@@ -135,7 +135,7 @@ export function Contact() {
           </div>
 
           <div className="space-y-6">
-            <Card>
+            {/* <Card>
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -148,7 +148,7 @@ export function Contact() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Card>
               <CardContent className="p-6">

@@ -111,13 +111,13 @@ export function Footer() {
           <div>
             <h3 className="text-white mb-4">Kontakt</h3>
             <ul className="space-y-3">
-              <li className="flex items-center gap-2 text-gray-400">
+              {/* <li className="flex items-center gap-2 text-gray-400">
                 <Phone className="w-4 h-4" />
                 <span>010-123 45 67</span>
-              </li>
+              </li> */}
               <li className="flex items-center gap-2 text-gray-400">
                 <Mail className="w-4 h-4" />
-                <span>info@servicewell.se</span>
+                <span>kontakt@servicewell.se</span>
               </li>
             </ul>
           </div>
@@ -125,7 +125,7 @@ export function Footer() {
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
           <p>
-            &copy; 2025 ServiceWell. Alla rättigheter
+            &copy; 2026 ServiceWell. Alla rättigheter
             förbehållna.
           </p>
         </div>
