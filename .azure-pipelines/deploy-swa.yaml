@@ -1,0 +1,18 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: self
+
+
+  - task: AzureResourceManagerTemplateDeployment@3
+    inputs:
+      deploymentScope: Resource Group
+      azureResourceManagerConnection: 'Service Well RG'
+      resourceGroupName: 'servicewell'
+      location: 'Sweden Central'
+      csmFile: 'IaC/static-web-app.bicep'
+      deploymentMode: Incremental
+      deploymentName: sw-landing-page-$(Build.BuildId)
