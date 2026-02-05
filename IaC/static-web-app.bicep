@@ -26,3 +26,11 @@ resource swa 'Microsoft.Web/staticSites@2025-03-01' = {
     publicNetworkAccess: 'Enabled'
   }
 }
+
+resource swaAppSettings 'Microsoft.Web/staticSites/config@2025-03-01' = {
+  name: 'appsettings'
+  parent: swa
+  properties: {
+    
+  }
+}
